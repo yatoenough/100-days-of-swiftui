@@ -41,6 +41,15 @@ struct ContentView: View {
             } message: {
                 Text(errorMessage)
             }
+            .toolbar {
+                Button("Another word") {
+                    withAnimation {
+                        usedWords.removeAll()
+                        newWord = ""
+                        load()
+                    }
+                }
+            }
         }
     }
     

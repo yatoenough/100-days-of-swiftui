@@ -17,11 +17,13 @@ struct ContentView: View {
     
     @State private var score = 0
     
+    @State private var rotationAmounts = [0.0, 0.0, 0.0]
+    @State private var selectedFlag: Int? = nil
+    
     var body: some View {
         ZStack {
             LinearGradient(colors: [.blue, .black], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
-                
             
             VStack(spacing: 30) {
                 VStack {
@@ -35,11 +37,22 @@ struct ContentView: View {
                 
                 ForEach(0..<3) { num in
                     Button {
+                        withAnimation() {
+                            selectedFlag = num
+                            rotationAmounts[num] += 360
+                        }
+                        
                         flagTapped(num)
                     } label: {
                         Image(countries[num])
                             .clipShape(.capsule)
                             .shadow(radius: 5)
+                            .rotation3DEffect(
+                                .degrees(rotationAmounts[num]),
+                                axis: (x: 0, y: 1, z: 0)
+                            )
+                            .opacity(selectedFlag == nil || selectedFlag == num ? 1 : 0.25)
+                            .scaleEffect(selectedFlag == nil || selectedFlag == num ? 1 : 0.75)
                     }
                 }
             }
@@ -63,8 +76,12 @@ struct ContentView: View {
     }
     
     func nextGuess() {
-        countries.shuffle()
-        correctAnswer = Int.random(in: 0...2)
+        withAnimation {
+            countries.shuffle()
+            correctAnswer = Int.random(in: 0...2)
+            rotationAmounts = [0.0, 0.0, 0.0]
+            selectedFlag = nil
+        }
     }
 }
 

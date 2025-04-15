@@ -27,10 +27,26 @@ struct ContentView: View {
             
             VStack {
                 if gameStarted {
-                    QuestionItem(question: questions[currentQuestionIndex])
-                        .transition(.scale)
+                    QuestionItem(
+                        question: questions[currentQuestionIndex],
+                        onAnswer: {
+                            guard currentQuestionIndex < questions.count-1 else {
+                                withAnimation {
+                                    gameStarted = false
+                                    currentQuestionIndex = 0
+                                }
+                                return
+                            }
+                            
+                            withAnimation {
+                                currentQuestionIndex += 1
+                            }
+                        })
+                    .transition(.scale)
                 } else {
                     StartForm(upTo: $upTo, questionsCount: $questionsCount) {
+                        questions.removeAll()
+                        
                         for _ in 0..<questionsCount {
                             let firstNumber = Int.random(in: 1...upTo)
                             let secondNumber = Int.random(in: 1...upTo)

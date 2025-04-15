@@ -9,18 +9,47 @@ import SwiftUI
 
 struct QuestionItem: View {
     let question: Question
+    let onAnswer: () -> Void
+    
+    @State private var answer: String = ""
     
     var body: some View {
         VStack(spacing: 30) {
             Text("\(question.text) = ")
                 .font(.largeTitle)
+                .contentTransition(.numericText())
             
-            TextField("Type answer here...", text: .constant(""))
+            HStack {
+                TextField("Type answer here...", text: $answer)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .tint(.white)
+                    .keyboardType(.numberPad)
+                    
+                
+                Button("Check") {
+                    let parsedAmount = Int(answer)
+                    
+                    guard let parsedAmount else { return }
+                    
+                    if parsedAmount == question.answer {
+                        print("Correct!")
+                    } else {
+                        print("Wrong!")
+                    }
+                    
+                    withAnimation {
+                        answer = ""
+                    }
+                    
+                    onAnswer()
+                }
+                .buttonStyle(.bordered)
+                .tint(.white.opacity(0.3))
+                .scaleEffect(1.5)
                 .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .tint(.white)
-                .keyboardType(.numberPad)
+            }
             
         }
         .padding()
@@ -34,6 +63,6 @@ struct QuestionItem: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    QuestionItem(question: Question(text: "2 x 2", answer: 4))
+    QuestionItem(question: Question(text: "2 x 2", answer: 4)) {}
         .background(.black)
 }

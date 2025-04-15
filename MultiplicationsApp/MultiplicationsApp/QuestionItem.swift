@@ -27,28 +27,14 @@ struct QuestionItem: View {
                     .tint(.white)
                     .keyboardType(.numberPad)
                     
-                
-                Button("Check") {
-                    let parsedAmount = Int(answer)
-                    
-                    guard let parsedAmount else { return }
-                    
-                    if parsedAmount == question.answer {
-                        print("Correct!")
-                    } else {
-                        print("Wrong!")
-                    }
-                    
-                    withAnimation {
-                        answer = ""
-                    }
-                    
-                    onAnswer()
-                }
+                Button("Check", action: submitAnswer)
                 .buttonStyle(.bordered)
                 .tint(.white.opacity(0.3))
                 .scaleEffect(1.5)
                 .padding()
+            }
+            .onSubmit {
+                submitAnswer()
             }
             
         }
@@ -59,6 +45,24 @@ struct QuestionItem: View {
         .foregroundColor(.white)
         .bold()
         .padding()
+    }
+    
+    private func submitAnswer() {
+        let parsedAmount = Int(answer)
+        
+        guard let parsedAmount else { return }
+        
+        if parsedAmount == question.answer {
+            print("Correct!")
+        } else {
+            print("Wrong!")
+        }
+        
+        withAnimation {
+            answer = ""
+        }
+        
+        onAnswer()
     }
 }
 

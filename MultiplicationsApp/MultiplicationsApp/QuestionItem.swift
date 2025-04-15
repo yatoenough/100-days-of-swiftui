@@ -52,11 +52,7 @@ struct QuestionItem: View {
         
         guard let parsedAmount else { return }
         
-        if parsedAmount == question.answer {
-            print("Correct!")
-        } else {
-            print("Wrong!")
-        }
+        answeredQuestions[question] = parsedAmount
         
         withAnimation {
             answer = ""

@@ -7,11 +7,14 @@
 
 import SwiftUI
 
+var answeredQuestions: [Question: Int] = [:]
+
 struct ContentView: View {
-    @State private var upTo = 2
+    @State private var upTo = 6
     @State private var questionsCount = 5
     
     @State private var gameStarted = false
+    @State private var gameEnded = false
     
     @State private var currentQuestionIndex = 0
     @State private var questions: [Question] = []
@@ -29,43 +32,58 @@ struct ContentView: View {
                 if gameStarted {
                     QuestionItem(
                         question: questions[currentQuestionIndex],
-                        onAnswer: {
-                            guard currentQuestionIndex < questions.count-1 else {
-                                withAnimation {
-                                    gameStarted = false
-                                    currentQuestionIndex = 0
-                                }
-                                return
-                            }
-                            
-                            withAnimation {
-                                currentQuestionIndex += 1
-                            }
-                        })
+                        onAnswer: onAnswer
+                    )
                     .transition(.scale)
                 } else {
-                    StartForm(upTo: $upTo, questionsCount: $questionsCount) {
-                        questions.removeAll()
-                        
-                        for _ in 0..<questionsCount {
-                            let firstNumber = Int.random(in: 1...upTo)
-                            let secondNumber = Int.random(in: 1...upTo)
-                            
-                            let question = Question(
-                                text: "\(firstNumber) x \(secondNumber)",
-                                answer: firstNumber*secondNumber
-                            )
-                            
-                            questions.append(question)
-                        }
-                        
-                        withAnimation {
-                            gameStarted = true
-                        }
+                    if gameEnded {
+                        Text("End")
+                            .transition(.scale)
+                    } else {
+                        StartForm(
+                            upTo: $upTo,
+                            questionsCount: $questionsCount,
+                            onStart: onGameStart
+                        )
+                        .transition(.scale)
                     }
-                    .transition(.scale)
                 }
             }
+        }
+    }
+    
+    private func onGameStart() {
+        questions.removeAll()
+        
+        for _ in 0..<questionsCount {
+            let firstNumber = Int.random(in: 1...upTo)
+            let secondNumber = Int.random(in: 1...upTo)
+            
+            let question = Question(
+                text: "\(firstNumber) x \(secondNumber)",
+                answer: firstNumber*secondNumber
+            )
+            
+            questions.append(question)
+        }
+        
+        withAnimation {
+            gameStarted = true
+        }
+    }
+    
+    private func onAnswer() {
+        guard currentQuestionIndex < questions.count-1 else {
+            withAnimation {
+                gameStarted = false
+                gameEnded = true
+                currentQuestionIndex = 0
+            }
+            return
+        }
+        
+        withAnimation {
+            currentQuestionIndex += 1
         }
     }
 }

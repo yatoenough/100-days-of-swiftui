@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Question {
+struct Question: Hashable {
     let text: String
     let answer: Int
 }

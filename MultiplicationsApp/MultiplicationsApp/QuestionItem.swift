@@ -12,6 +12,7 @@ struct QuestionItem: View {
     let onAnswer: () -> Void
     
     @State private var answer: String = ""
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         VStack(spacing: 30) {
@@ -26,6 +27,7 @@ struct QuestionItem: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .tint(.white)
                     .keyboardType(.numberPad)
+                    .focused($isFocused)
                     
                 Button("Check", action: submitAnswer)
                 .buttonStyle(.bordered)
@@ -52,13 +54,14 @@ struct QuestionItem: View {
         
         guard let parsedAmount else { return }
         
-        answeredQuestions[question] = parsedAmount
+        answersOnQuestions.append(parsedAmount)
         
         withAnimation {
             answer = ""
         }
         
         onAnswer()
+        isFocused = true
     }
 }
 

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-var answeredQuestions: [Question: Int] = [:]
+var answersOnQuestions: [Int] = []
 
 struct ContentView: View {
     @State private var upTo = 6
@@ -37,7 +37,7 @@ struct ContentView: View {
                     .transition(.scale)
                 } else {
                     if gameEnded {
-                        Text("End")
+                        ResultView(questions: questions, onRestart: onRestart)
                             .transition(.scale)
                     } else {
                         StartForm(
@@ -53,8 +53,6 @@ struct ContentView: View {
     }
     
     private func onGameStart() {
-        questions.removeAll()
-        
         for _ in 0..<questionsCount {
             let firstNumber = Int.random(in: 1...upTo)
             let secondNumber = Int.random(in: 1...upTo)
@@ -77,13 +75,22 @@ struct ContentView: View {
             withAnimation {
                 gameStarted = false
                 gameEnded = true
-                currentQuestionIndex = 0
             }
             return
         }
         
         withAnimation {
             currentQuestionIndex += 1
+        }
+    }
+    
+    private func onRestart() {
+        withAnimation {
+            questions.removeAll()
+            gameStarted = false
+            gameEnded = false
+            currentQuestionIndex = 0
+            answersOnQuestions = []
         }
     }
 }

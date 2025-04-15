@@ -22,9 +22,9 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [.yellow, .red, .blue],
-                startPoint: .bottomTrailing,
-                endPoint: .topLeading
+                colors: [.red, .indigo, .gray],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
             

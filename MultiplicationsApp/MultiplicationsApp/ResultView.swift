@@ -13,7 +13,7 @@ struct ResultView: View {
     
     var body: some View {
         ScrollView {
-            ForEach(0..<answersOnQuestions.count) { index in
+            ForEach(0..<answersOnQuestions.count, id: \.self) { index in
                 QuestionResult(question: questions[index], answer: answersOnQuestions[index])
             }
             
@@ -31,9 +31,4 @@ struct ResultView: View {
         .bold()
         .padding()
     }
-}
-
-#Preview(traits: .sizeThatFitsLayout) {
-    ResultView(questions: []) {}
-        .background(.black)
 }

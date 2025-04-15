@@ -18,7 +18,6 @@ struct QuestionResult: View {
             
             if answer == question.answer {
                 Text("\(answer)")
-                    .foregroundStyle(.green)
                     .font(.title2)
                 
                 Spacer()
@@ -50,7 +49,7 @@ struct QuestionResult: View {
 }
 
 #Preview {
-    QuestionResult(question: Question(text: "2 x 2", answer: 4), answer: 5)
+    QuestionResult(question: Question(text: "2 x 2", answer: 4), answer: 4)
         .padding()
         .background(.black)
 }

@@ -13,6 +13,9 @@ struct ContentView: View {
     
     @State private var gameStarted = false
     
+    @State private var currentQuestionIndex = 0
+    @State private var questions: [Question] = []
+    
     var body: some View {
         ZStack {
             LinearGradient(
@@ -23,17 +26,23 @@ struct ContentView: View {
             .ignoresSafeArea()
             
             VStack {
-                Button("Toggle") {
-                    withAnimation {
-                        gameStarted.toggle()
-                    }
-                }
-                
                 if gameStarted {
-                    QuestionItem()
+                    QuestionItem(question: questions[currentQuestionIndex])
                         .transition(.scale)
                 } else {
                     StartForm(upTo: $upTo, questionsCount: $questionsCount) {
+                        for _ in 0..<questionsCount {
+                            let firstNumber = Int.random(in: 1...upTo)
+                            let secondNumber = Int.random(in: 1...upTo)
+                            
+                            let question = Question(
+                                text: "\(firstNumber) x \(secondNumber)",
+                                answer: firstNumber*secondNumber
+                            )
+                            
+                            questions.append(question)
+                        }
+                        
                         withAnimation {
                             gameStarted = true
                         }

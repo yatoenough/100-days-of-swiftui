@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct QuestionItem: View {
+    let question: Question
+    
     var body: some View {
         VStack(spacing: 30) {
-            Text("Question")
+            Text("\(question.text) = ")
                 .font(.largeTitle)
+            
+            TextField("Type answer here...", text: .constant(""))
+                .padding()
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .tint(.white)
+                .keyboardType(.numberPad)
             
         }
         .padding()
@@ -25,6 +34,6 @@ struct QuestionItem: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    QuestionItem()
-    .background(.black)
+    QuestionItem(question: Question(text: "2 x 2", answer: 4))
+        .background(.black)
 }

@@ -54,8 +54,8 @@ struct ContentView: View {
     
     private func onGameStart() {
         for _ in 0..<questionsCount {
-            let firstNumber = Int.random(in: 1...upTo)
-            let secondNumber = Int.random(in: 1...upTo)
+            let firstNumber = Int.random(in: 2...upTo)
+            let secondNumber = Int.random(in: 2...upTo)
             
             let question = Question(
                 text: "\(firstNumber) x \(secondNumber)",

@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ResultView: View {
     let questions: [Question]
+    let givenAnswers: [Int]
     let onRestart: () -> Void
     
     var body: some View {
         ScrollView {
-            ForEach(0..<answersOnQuestions.count, id: \.self) { index in
-                QuestionResult(question: questions[index], answer: answersOnQuestions[index])
+            ForEach(0..<givenAnswers.count, id: \.self) { index in
+                QuestionResult(question: questions[index], answer: givenAnswers[index])
             }
             
             Button("Play Again", action: onRestart)
@@ -31,4 +32,17 @@ struct ResultView: View {
         .bold()
         .padding()
     }
+}
+
+#Preview(traits: .sizeThatFitsLayout) {
+    ResultView(
+        questions: [
+            Question(text: "2 x 2", answer: 4),
+            Question(text: "2 x 2", answer: 4),
+            Question(text: "2 x 2", answer: 4),
+            Question(text: "2 x 2", answer: 4),
+        ],
+        givenAnswers: [4, 4, 3, 4],
+        onRestart: {}
+    ).background(.black)
 }

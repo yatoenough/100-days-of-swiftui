@@ -15,9 +15,6 @@ struct StartForm: View {
     
     var body: some View {
         VStack(spacing: 30) {
-            Text("Multiplication")
-                .font(.largeTitle)
-            
             Stepper("Up to \(upTo)", value: $upTo, in: 2...12)
             
             HStack {
@@ -60,9 +57,7 @@ struct StartForm: View {
     @Previewable @State var upTo = 2
     @Previewable @State var questionsCount = 5
     
-    StartForm(upTo: $upTo, questionsCount: $questionsCount) {
-        
-    }
+    StartForm(upTo: $upTo, questionsCount: $questionsCount) {}
     .background(.black)
 }
 

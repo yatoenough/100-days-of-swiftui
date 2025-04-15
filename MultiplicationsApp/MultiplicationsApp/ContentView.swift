@@ -29,6 +29,12 @@ struct ContentView: View {
             .ignoresSafeArea()
             
             VStack {
+                Text("Multiplication Game")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundStyle(.white)
+                
+                
                 if gameStarted {
                     QuestionItem(
                         question: questions[currentQuestionIndex],
@@ -37,7 +43,11 @@ struct ContentView: View {
                     .transition(.scale)
                 } else {
                     if gameEnded {
-                        ResultView(questions: questions, onRestart: onRestart)
+                        ResultView(
+                            questions: questions,
+                            givenAnswers: answersOnQuestions,
+                            onRestart: onRestart
+                        )
                             .transition(.scale)
                     } else {
                         StartForm(

@@ -48,7 +48,7 @@ struct QuestionResult: View {
     }
 }
 
-#Preview {
+#Preview(traits: .sizeThatFitsLayout) {
     QuestionResult(question: Question(text: "2 x 2", answer: 4), answer: 4)
         .padding()
         .background(.black)

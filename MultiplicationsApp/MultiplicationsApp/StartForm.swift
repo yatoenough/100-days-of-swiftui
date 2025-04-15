@@ -14,7 +14,7 @@ struct StartForm: View {
     let onStart: () -> Void
     
     var body: some View {
-        VStack(alignment: .center, spacing: 30) {
+        VStack(spacing: 30) {
             Text("Multiplication")
                 .font(.largeTitle)
             

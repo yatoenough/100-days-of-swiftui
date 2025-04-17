@@ -22,11 +22,11 @@ struct ContentView: View {
             .navigationTitle("iExpense")
             .toolbar {
                 Button("Add expense", systemImage: "plus") {
-                    showingAddExpense.toggle()
+                    showingAddExpense = true
                 }
             }
             .sheet(isPresented: $showingAddExpense) {
-                AddView()
+                AddView(expenses: expenses)
             }
         }
     }

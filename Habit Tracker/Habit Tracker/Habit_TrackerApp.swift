@@ -11,7 +11,9 @@ import SwiftUI
 struct Habit_TrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            MainScreen()
+			NavigationStack {
+				MainScreen()
+			}
         }
     }
 }

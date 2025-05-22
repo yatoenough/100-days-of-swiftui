@@ -8,20 +8,30 @@
 import SwiftUI
 
 struct MainScreen: View {
-	private let habits: [String] = [
-		"Drink water",
-		"Read a book",
-		"Go for a walk",
-		"Meditate",
-		"Learn a new language"
+	private let habits: [Habit] = [
+		Habit(
+			title: "Learn Swift",
+			description: "Learn SwiftUI and UIKit",
+			lastCompleted: nil
+		)
 	]
 	
-    var body: some View {
-		List(habits, id: \.self) { habit in
-            Text(habit)
-        }
+	var body: some View {
+		ScrollView {
+			VStack(alignment: .leading) {
+				Text("Completed Today:")
+					.font(.title).bold()
+					.padding()
+				
+				ForEach(habits, id: \.self) { habit in
+					Text(habit.title)
+						.frame(maxWidth: .infinity)
+				}
+			}
+		}
 		.navigationTitle("Habit Tracker")
-    }
+		
+	}
 }
 
 #Preview {

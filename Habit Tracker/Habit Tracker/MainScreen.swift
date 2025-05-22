@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct MainScreen: View {
-	private let habits: [Habit] = [
-		Habit(
-			title: "Learn Swift",
-			description: "Learn SwiftUI and UIKit",
-			lastCompleted: nil
-		)
-	]
+	private let habitVM = HabitViewModel()
+	
+	private var completedHabits: [Habit] {
+		habitVM.habits.filter({ habitVM.completedToday($0) })
+	}
+	
+	private var uncompletedHabits: [Habit] {
+		habitVM.habits.filter({ !habitVM.completedToday($0) })
+	}
 	
 	var body: some View {
 		ScrollView {
@@ -23,14 +25,24 @@ struct MainScreen: View {
 					.font(.title).bold()
 					.padding()
 				
-				ForEach(habits, id: \.self) { habit in
-					HabitItem(habit: habit)
+				ForEach(completedHabits, id: \.self) { habit in
+					HabitItem(habit: habit, habitVM: habitVM)
+						.padding()
+				}
+			}
+			
+			VStack(alignment: .leading) {
+				Text("Not Completed Today:")
+					.font(.title).bold()
+					.padding()
+				
+				ForEach(uncompletedHabits, id: \.self) { habit in
+					HabitItem(habit: habit, habitVM: habitVM)
 						.padding()
 				}
 			}
 		}
 		.navigationTitle("Habit Tracker")
-		
 	}
 }
 

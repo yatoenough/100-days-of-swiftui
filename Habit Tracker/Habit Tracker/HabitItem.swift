@@ -9,12 +9,13 @@ import SwiftUI
 
 struct HabitItem: View {
 	let habit: Habit
+	let habitVM: HabitViewModel
 	
     var body: some View {
 		HStack {
 			VStack(alignment: .leading, spacing: 15) {
 				Text(habit.title)
-					.font(.title).bold()
+					.font(.title2).bold()
 				
 				if let description = habit.description {
 					Text(description)
@@ -27,7 +28,7 @@ struct HabitItem: View {
 			HStack {
 				Circle()
 					.stroke(lineWidth: 3)
-					.foregroundStyle(completedToday() ? .blue : .black)
+					.foregroundStyle(habitVM.completedToday(habit) ? .blue : .black)
 					.frame(width: 75, height: 75)
 					.overlay {
 						Text("🔥\(habit.streak)")
@@ -40,17 +41,12 @@ struct HabitItem: View {
 			.fill(Color(uiColor: .secondarySystemFill))
 		)
     }
-	
-	private func completedToday() -> Bool {
-		guard let lastCompleted = habit.lastCompleted else { return false }
-		return Calendar.current.isDateInToday(lastCompleted)
-	}
 }
 
 #Preview("Item with description", traits: .sizeThatFitsLayout) {
-	HabitItem(habit: Habit(title: "Demo", description: "This is a demo description", lastCompleted: Date.now))
+	HabitItem(habit: Habit(title: "Demo", description: "This is a demo description", lastCompleted: Date.now), habitVM: HabitViewModel())
 }
 
 #Preview("Item without description", traits: .sizeThatFitsLayout) {
-	HabitItem(habit: Habit(title: "Demo", description: nil, lastCompleted: Date.now))
+	HabitItem(habit: Habit(title: "Demo", description: nil, lastCompleted: Date.now), habitVM: HabitViewModel())
 }

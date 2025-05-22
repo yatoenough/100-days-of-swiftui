@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainScreen: View {
-	private let habitVM = HabitViewModel()
+	@State private var habitVM = HabitViewModel()
 	
 	private var completedHabits: [Habit] {
 		habitVM.habits.filter({ habitVM.completedToday($0) })
@@ -21,22 +21,30 @@ struct MainScreen: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-				Text("Completed Today:")
-					.font(.title).bold()
-					.padding()
+				HStack {
+					Text("Completed Today:")
+						.font(.title).bold()
+						.padding()
+					
+					Spacer()
+				}
 				
-				ForEach(completedHabits, id: \.self) { habit in
+				ForEach(completedHabits, id: \.id) { habit in
 					HabitItem(habit: habit, habitVM: habitVM)
 						.padding()
 				}
 			}
 			
 			VStack(alignment: .leading) {
-				Text("Not Completed Today:")
-					.font(.title).bold()
-					.padding()
+				HStack {
+					Text("Not Completed Today:")
+						.font(.title).bold()
+						.padding()
+					
+					Spacer()
+				}
 				
-				ForEach(uncompletedHabits, id: \.self) { habit in
+				ForEach(uncompletedHabits, id: \.id) { habit in
 					HabitItem(habit: habit, habitVM: habitVM)
 						.padding()
 				}

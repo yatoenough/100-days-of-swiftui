@@ -7,24 +7,25 @@
 
 import Foundation
 
-struct Habit: Codable, Hashable, Identifiable {
+struct Habit: Codable, Identifiable {
 	let id: UUID
 	let title: String
 	let description: String?
-	let lastCompleted: Date?
+	private var _lastCompleted: Date?
 	private var timesCompleted = 0
 	
 	var streak: Int { timesCompleted }
+	var lastCompleted: Date? { _lastCompleted }
 	
-	init(title: String, description: String?, lastCompleted: Date?) {
+	init(title: String, description: String?) {
 		self.id = UUID()
 		self.title = title
 		self.description = description
-		self.lastCompleted = lastCompleted
 	}
 	
 	mutating func markCompleted() {
 		timesCompleted += 1
+		_lastCompleted = Date.now
 	}
 	
 }

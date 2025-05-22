@@ -31,8 +31,14 @@ struct HabitItem: View {
 					.foregroundStyle(habitVM.completedToday(habit) ? .blue : .black)
 					.frame(width: 75, height: 75)
 					.overlay {
-						Text("🔥\(habit.streak)")
-							.font(.headline)
+						Button {
+							withAnimation {
+								habitVM.markCompleted(habit)
+							}
+						} label: {
+							Text("🔥\(habit.streak)")
+								.font(.headline)
+						}
 					}
 			}
 		}
@@ -44,9 +50,9 @@ struct HabitItem: View {
 }
 
 #Preview("Item with description", traits: .sizeThatFitsLayout) {
-	HabitItem(habit: Habit(title: "Demo", description: "This is a demo description", lastCompleted: Date.now), habitVM: HabitViewModel())
+	HabitItem(habit: Habit(title: "Demo", description: "This is a demo description"), habitVM: HabitViewModel())
 }
 
 #Preview("Item without description", traits: .sizeThatFitsLayout) {
-	HabitItem(habit: Habit(title: "Demo", description: nil, lastCompleted: Date.now), habitVM: HabitViewModel())
+	HabitItem(habit: Habit(title: "Demo", description: nil), habitVM: HabitViewModel())
 }

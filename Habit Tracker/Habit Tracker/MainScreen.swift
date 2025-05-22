@@ -24,8 +24,8 @@ struct MainScreen: View {
 					.padding()
 				
 				ForEach(habits, id: \.self) { habit in
-					Text(habit.title)
-						.frame(maxWidth: .infinity)
+					HabitItem(habit: habit)
+						.padding()
 				}
 			}
 		}

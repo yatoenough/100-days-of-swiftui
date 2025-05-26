@@ -9,19 +9,39 @@ import Foundation
 
 @Observable
 class HabitViewModel {
-	var habits: [Habit] = [
-		Habit(title: "Demo", description: "This is a demo description")
-	]
-
+	private var store: [Habit] {
+		didSet {
+			UserDefaults.standard.set(try? JSONEncoder().encode(habits), forKey: "habits")
+		}
+	}
+	
+	var habits: [Habit] { store }
+	
+	init() {
+		do {
+			guard let data = UserDefaults.standard.data(forKey: "habits") else {
+				store = []
+				return
+			}
+			
+			self.store = try! JSONDecoder().decode([Habit].self, from: data)
+		}
+		
+	}
+	
+	func addHabit(_ habit: Habit) {
+		store.append(habit)
+	}
+	
 	func markCompleted(_ habit: Habit) {
-		let storedHabit = habits.first(where: { $0.id == habit.id })
+		let storedHabit = store.first(where: { $0.id == habit.id })
 		guard var storedHabit else { return }
 		if completedToday(storedHabit) { return }
 		
 		storedHabit.markCompleted()
 		
-		habits.removeAll { $0.id == storedHabit.id }
-		habits.append(storedHabit)
+		store.removeAll { $0.id == storedHabit.id }
+		store.append(storedHabit)
 	}
 	
 	func completedToday(_ habit: Habit) -> Bool {

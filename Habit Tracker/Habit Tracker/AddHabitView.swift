@@ -43,7 +43,7 @@ struct AddHabitView: View {
 		
 		guard validateInput() else { return }
 		
-		habitVM.habits.append(habit)
+		habitVM.addHabit(habit)
 	}
 	
 	private func validateInput() -> Bool {

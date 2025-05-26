@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainScreen: View {
 	@State private var habitVM = HabitViewModel()
+	@State private var showAddHabitSheet: Bool = false
 	
 	private var completedHabits: [Habit] {
 		habitVM.habits.filter({ habitVM.completedToday($0) })
@@ -51,6 +52,16 @@ struct MainScreen: View {
 			}
 		}
 		.navigationTitle("Habit Tracker")
+		.toolbar {
+			Button("Add +") {
+				showAddHabitSheet.toggle()
+			}
+		}
+		.sheet(isPresented: $showAddHabitSheet) {
+			NavigationStack {
+				AddHabitView(habitVM: habitVM)
+			}
+		}
 	}
 }
 

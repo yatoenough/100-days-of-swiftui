@@ -21,8 +21,9 @@ class UsersViewModel {
 			let decoder = JSONDecoder()
 			decoder.dateDecodingStrategy = .iso8601
 
-			users = try decoder.decode([User].self, from: data)
-			print(users)
+			users = try decoder
+				.decode([UserDTO].self, from: data)
+				.map(User.init)
 		} catch URLError.notConnectedToInternet {
 			print("No internet connection")
 		} catch {

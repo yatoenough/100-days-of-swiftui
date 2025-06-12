@@ -26,4 +26,18 @@ class UsersViewModel {
 			fatalError(error.localizedDescription)
 		}
 	}
+	
+	func getFriendsOfUser(_ user: User) -> [User] {
+		var friends = [User]()
+		
+		guard let unwrappedFriends = user.friends else { return friends }
+		
+		for friend in unwrappedFriends {
+			guard let friendUser = users.first(where: { $0.id == friend.id }) else { continue }
+			
+			friends.append(friendUser)
+		}
+		
+		return friends
+	}
 }

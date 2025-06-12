@@ -12,6 +12,8 @@ struct UserDetailView: View {
 	let user: User
 	
 	@Query private var users: [User]
+	
+	@Environment(UsersViewModel.self) private var usersViewModel
 
 	private var activityTitle: String {
 		user.isActive ? "Active" : "Inactive"
@@ -22,17 +24,7 @@ struct UserDetailView: View {
 	}
 	
 	private var friendsOfUser: [User] {
-		var friends = [User]()
-		
-		guard let unwrappedFriends = user.friends else { return friends }
-		
-		for friend in unwrappedFriends {
-			guard let friendUser = users.first(where: { $0.id == friend.id }) else { continue }
-			
-			friends.append(friendUser)
-		}
-		
-		return friends
+		usersViewModel.getFriendsOfUser(user)
 	}
 
 	var body: some View {

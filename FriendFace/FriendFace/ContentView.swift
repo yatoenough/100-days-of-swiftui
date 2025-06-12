@@ -8,17 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+	@Environment(UsersViewModel.self) private var usersViewModel
+
+	@State private var users = [User]()
+
+	var body: some View {
+		ScrollView {
+			LazyVStack {
+				ForEach(users) { user in
+					Text(user.id)
+				}
+			}
+		}
+		.navigationTitle("FriendFace")
+		.task {
+			users = await usersViewModel.fetchUsers()
+		}
+	}
 }
 
 #Preview {
-    ContentView()
+	NavigationStack {
+		ContentView()
+			.environment(UsersViewModel())
+	}
 }

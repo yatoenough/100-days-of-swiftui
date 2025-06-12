@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-	@Query private var users: [User]
+	@Query(sort: \User.name) private var users: [User]
 
 	@State private var router = Router.shared
 

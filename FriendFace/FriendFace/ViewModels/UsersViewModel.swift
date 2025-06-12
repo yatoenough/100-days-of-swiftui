@@ -22,6 +22,9 @@ class UsersViewModel {
 			decoder.dateDecodingStrategy = .iso8601
 
 			users = try decoder.decode([User].self, from: data)
+			print(users)
+		} catch URLError.notConnectedToInternet {
+			print("No internet connection")
 		} catch {
 			fatalError(error.localizedDescription)
 		}

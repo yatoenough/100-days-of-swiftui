@@ -11,17 +11,29 @@ struct ContentView: View {
 	@Environment(UsersViewModel.self) private var usersViewModel
 
 	@State private var users = [User]()
+	
+	@State private var path = NavigationPath()
 
 	var body: some View {
-		ScrollView {
-			LazyVStack {
-				ForEach(users) { user in
-					Text(user.id)
+		NavigationStack(path: $path) {
+			ScrollView {
+				LazyVStack {
+					ForEach(users) { user in
+						UserItem(user: user)
+							.padding()
+							.onTapGesture {
+								path.append(user)
+							}
+					}
 				}
 			}
 		}
 		.navigationTitle("FriendFace")
+		.navigationDestination(for: User.self) { user in
+			Text(user.about)
+		}
 		.task {
+			guard users.isEmpty else { return }
 			users = await usersViewModel.fetchUsers()
 		}
 	}

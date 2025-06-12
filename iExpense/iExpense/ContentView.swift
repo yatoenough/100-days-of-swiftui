@@ -11,7 +11,7 @@ import SwiftData
 struct ContentView: View {
     @State private var showingAddExpense = false
 	
-	@Query private var expenses: [ExpenseItem]
+	@Query(sort: \ExpenseItem.amount) private var expenses: [ExpenseItem]
 	@Environment(\.modelContext) var modelContext
     
     var body: some View {

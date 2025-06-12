@@ -9,7 +9,9 @@ import Foundation
 
 @Observable
 class UsersViewModel {
-	func fetchUsers() async -> [User] {
+	private(set) var users = [User]()
+	
+	func fetchUsers() async {
 		let urlString = "https://www.hackingwithswift.com/samples/friendface.json"
 		guard let url = URL(string: urlString) else { fatalError("Invalid URL") }
 
@@ -19,7 +21,7 @@ class UsersViewModel {
 			let decoder = JSONDecoder()
 			decoder.dateDecodingStrategy = .iso8601
 
-			return try decoder.decode([User].self, from: data)
+			users = try decoder.decode([User].self, from: data)
 		} catch {
 			fatalError(error.localizedDescription)
 		}

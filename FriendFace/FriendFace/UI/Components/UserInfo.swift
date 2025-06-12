@@ -1,5 +1,5 @@
 //
-//  UserItem.swift
+//  UserInfo.swift
 //  FriendFace
 //
 //  Created by Nikita Shyshkin on 12/06/2025.
@@ -7,29 +7,27 @@
 
 import SwiftUI
 
-struct UserItem: View {
+struct UserInfo: View {
 	let user: User
-
-	var body: some View {
-		HStack {
-			VStack(alignment: .leading) {
-				UserInfo(user: user)
-				Text("\(user.email)")
-			}
-
-			Spacer()
-		}
-		.padding()
-		.background(
-			RoundedRectangle(cornerRadius: 20)
-				.fill(Color.white)
-				.shadow(color: .gray.opacity(0.5), radius: 10, y: 10)
-		)
+	
+	private var activityIndicatorColor: Color {
+		user.isActive ? .green : .gray
 	}
+	
+    var body: some View {
+		HStack {
+			Text("\(user.name), \(user.age)")
+				.font(.title)
+				.bold()
+			Circle()
+				.frame(width: 15, height: 15)
+				.foregroundColor(activityIndicatorColor)
+		}
+    }
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-	UserItem(
+    UserInfo(
 		user: User(
 			id: UUID().uuidString,
 			isActive: false,

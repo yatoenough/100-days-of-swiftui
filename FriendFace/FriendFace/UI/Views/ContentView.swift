@@ -10,38 +10,38 @@ import SwiftUI
 struct ContentView: View {
 	@Environment(UsersViewModel.self) private var usersViewModel
 
-	@State private var users = [User]()
-	
-	@State private var path = NavigationPath()
+	private var users: [User] {
+		usersViewModel.users
+	}
+
+	@State private var router = Router.shared
 
 	var body: some View {
-		NavigationStack(path: $path) {
+		NavigationStack(path: $router.path) {
 			ScrollView {
 				LazyVStack {
 					ForEach(users) { user in
 						UserItem(user: user)
-							.padding()
 							.onTapGesture {
-								path.append(user)
+								Router.shared.path.append(user)
 							}
+							.padding()
 					}
 				}
 			}
-		}
-		.navigationTitle("FriendFace")
-		.navigationDestination(for: User.self) { user in
-			Text(user.about)
-		}
-		.task {
-			guard users.isEmpty else { return }
-			users = await usersViewModel.fetchUsers()
+			.navigationTitle("Home")
+			.navigationDestination(for: User.self) { user in
+				UserDetailView(user: user)
+			}
+			.task {
+				guard users.isEmpty else { return }
+				await usersViewModel.fetchUsers()
+			}
 		}
 	}
 }
 
 #Preview {
-	NavigationStack {
-		ContentView()
-			.environment(UsersViewModel())
-	}
+	ContentView()
+		.environment(UsersViewModel())
 }

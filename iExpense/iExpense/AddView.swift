@@ -13,8 +13,7 @@ struct AddView: View {
     @State private var amount = 0.0
     
     @Environment(\.dismiss) private var dismiss
-    
-    var expenses: Expenses
+	@Environment(\.modelContext) private var modelContext
     
     private let types = ["Business", "Personal"]
     
@@ -38,7 +37,7 @@ struct AddView: View {
             .toolbar {
                 Button("Save") {
                     let expenseItem = ExpenseItem(name: name, type: type, amount: amount)
-                    expenses.items.append(expenseItem)
+					modelContext.insert(expenseItem)
                     dismiss()
                 }
                 .bold()
@@ -48,5 +47,5 @@ struct AddView: View {
 }
 
 #Preview {
-    AddView(expenses: Expenses())
+    AddView()
 }

@@ -6,15 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
-    @State private var expenses = Expenses()
     @State private var showingAddExpense = false
+	
+	@Query private var expenses: [ExpenseItem]
+	@Environment(\.modelContext) var modelContext
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(expenses.items) { item in
+                ForEach(expenses) { item in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(item.name)
@@ -35,16 +38,21 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showingAddExpense) {
-                AddView(expenses: expenses)
+                AddView()
             }
         }
     }
     
     private func removeExpenses(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
+		
+		
+		for offset in offsets {
+			modelContext.delete(expenses[offset])
+		}
     }
 }
 
 #Preview {
-    ContentView()
+	ContentView()
+		.modelContainer(for: ExpenseItem.self)
 }

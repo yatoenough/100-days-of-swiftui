@@ -6,13 +6,10 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
-	@Environment(UsersViewModel.self) private var usersViewModel
-
-	private var users: [User] {
-		usersViewModel.users
-	}
+	@Query private var users: [User]
 
 	@State private var router = Router.shared
 
@@ -33,10 +30,6 @@ struct ContentView: View {
 			.navigationDestination(for: User.self) { user in
 				UserDetailView(user: user)
 			}
-			.task {
-				guard users.isEmpty else { return }
-				await usersViewModel.fetchUsers()
-			}
 		}
 	}
 }
@@ -44,4 +37,5 @@ struct ContentView: View {
 #Preview {
 	ContentView()
 		.environment(UsersViewModel())
+		.modelContainer(for: User.self)
 }

@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct UserDetailView: View {
 	let user: User
 	
-	@Environment(UsersViewModel.self) private var usersViewModel
+	@Query private var users: [User]
 
 	private var activityTitle: String {
 		user.isActive ? "Active" : "Inactive"
@@ -23,8 +24,10 @@ struct UserDetailView: View {
 	private var friendsOfUser: [User] {
 		var friends = [User]()
 		
-		for friend in user.friends {
-			guard let friendUser = usersViewModel.users.first(where: { $0.id == friend.id }) else { continue }
+		guard let unwrappedFriends = user.friends else { return friends }
+		
+		for friend in unwrappedFriends {
+			guard let friendUser = users.first(where: { $0.id == friend.id }) else { continue }
 			
 			friends.append(friendUser)
 		}
@@ -69,9 +72,6 @@ struct UserDetailView: View {
 			.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 		}
 		.navigationTitle("\(user.name), \(user.age)")
-		.navigationDestination(for: User.self) { user in
-			UserDetailView(user: user)
-		}
 	}
 }
 

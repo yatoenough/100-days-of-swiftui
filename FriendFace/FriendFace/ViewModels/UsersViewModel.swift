@@ -31,7 +31,7 @@ class UsersViewModel {
 		}
 	}
 	
-	func getFriendsOfUser(_ user: User) -> [User] {
+	func getFriendsOf(user: User) -> [User] {
 		var friends = [User]()
 		
 		guard let unwrappedFriends = user.friends else { return friends }

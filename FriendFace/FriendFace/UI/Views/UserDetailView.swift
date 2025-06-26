@@ -24,7 +24,7 @@ struct UserDetailView: View {
 	}
 	
 	private var friendsOfUser: [User] {
-		usersViewModel.getFriendsOfUser(user)
+		usersViewModel.getFriendsOf(user: user)
 	}
 
 	var body: some View {

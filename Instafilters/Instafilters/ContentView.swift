@@ -15,8 +15,10 @@ struct ContentView: View {
 	@State private var filterIntensity = 0.5
 
 	@State private var selectedItem: PhotosPickerItem?
-	@State private var currentFilter = CIFilter.sepiaTone()
-	
+	@State private var currentFilter: CIFilter = CIFilter.sepiaTone()
+
+	@State private var showingFilters = false
+
 	let context = CIContext()
 
 	var body: some View {
@@ -53,15 +55,26 @@ struct ContentView: View {
 					Button("Change Filter", action: changeFilter)
 
 					Spacer()
-
 				}
 			}
 			.padding([.horizontal, .bottom])
 			.navigationTitle("Instafilter")
+			.confirmationDialog("Select a filter", isPresented: $showingFilters) {
+				Button("Crystallize") { setFilter(.crystallize()) }
+				Button("Edges") { setFilter(.edges()) }
+				Button("Gaussian Blur") { setFilter(.gaussianBlur()) }
+				Button("Pixellate") { setFilter(.pixellate()) }
+				Button("Sepia Tone") { setFilter(.sepiaTone()) }
+				Button("Unsharp Mask") { setFilter(.unsharpMask()) }
+				Button("Vignette") { setFilter(.vignette()) }
+				Button("Cancel", role: .cancel) { }
+			}
 		}
 	}
 
-	func changeFilter() { }
+	func changeFilter() {
+		showingFilters = true
+	}
 
 	func loadImage() {
 		Task {
@@ -73,15 +86,20 @@ struct ContentView: View {
 			applyProcessing()
 		}
 	}
-	
+
 	func applyProcessing() {
-		currentFilter.intensity = Float(filterIntensity)
+		currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey)
 
 		guard let outputImage = currentFilter.outputImage else { return }
 		guard let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else { return }
 
 		let uiImage = UIImage(cgImage: cgImage)
 		processedImage = Image(uiImage: uiImage)
+	}
+
+	func setFilter(_ filter: CIFilter) {
+		currentFilter = filter
+		loadImage()
 	}
 }
 

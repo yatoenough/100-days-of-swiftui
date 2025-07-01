@@ -15,13 +15,16 @@ struct ContentView: View {
 		MapReader { proxy in
 			Map {
 				ForEach(locations) { location in
-					Marker(
-						location.name,
-						coordinate: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-					)
+					Annotation(location.name, coordinate: location.coordinate) {
+						Image(systemName: "star.circle")
+							.resizable()
+							.foregroundStyle(.red)
+							.frame(width: 44, height: 44)
+							.background(.white)
+							.clipShape(.circle)
+					}
 				}
 			}
-			.mapStyle(.hybrid)
 			.onTapGesture { position in
 				if let coordinate = proxy.convert(position, from: .local) {
 					let newLocation = Location(
@@ -31,7 +34,7 @@ struct ContentView: View {
 						latitude: coordinate.latitude,
 						longitude: coordinate.longitude
 					)
-					
+
 					locations.append(newLocation)
 				}
 			}

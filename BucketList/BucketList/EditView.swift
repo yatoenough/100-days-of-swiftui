@@ -38,7 +38,7 @@ struct EditView: View {
 					TextField("Place name", text: $name)
 					TextField("Description", text: $description)
 				}
-				
+
 				Section("Nearby...") {
 					switch loadingState {
 					case .loading:
@@ -54,7 +54,7 @@ struct EditView: View {
 							Text(page.title)
 								.font(.headline)
 								+ Text(": ")
-								+ Text("Page description here")
+								+ Text(page.description)
 								.italic()
 						}
 					case .failed:
@@ -92,7 +92,7 @@ struct EditView: View {
 		do {
 			let (data, _) = try await URLSession.shared.data(from: url)
 			let items = try JSONDecoder().decode(Result.self, from: data)
-			pages = items.query.pages.values.sorted { $0.title < $1.title }
+			pages = items.query.pages.values.sorted()
 			withAnimation {
 				loadingState = .loaded
 			}

@@ -10,7 +10,8 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var locations = [Location]()
-
+	@State private var selectedPlace: Location?
+	
 	var body: some View {
 		MapReader { proxy in
 			Map {
@@ -22,7 +23,11 @@ struct ContentView: View {
 							.frame(width: 44, height: 44)
 							.background(.white)
 							.clipShape(.circle)
+							.onLongPressGesture(minimumDuration: 0.2) {
+								selectedPlace = location
+							}
 					}
+					
 				}
 			}
 			.onTapGesture { position in
@@ -34,9 +39,12 @@ struct ContentView: View {
 						latitude: coordinate.latitude,
 						longitude: coordinate.longitude
 					)
-
+					
 					locations.append(newLocation)
 				}
+			}
+			.sheet(item: $selectedPlace) { place in
+				Text(place.name)
 			}
 		}
 	}

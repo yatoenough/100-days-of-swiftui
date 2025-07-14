@@ -12,6 +12,8 @@ struct ContentView: View {
 	@State private var viewModel = ViewModel()
 	@State private var mapHybridStyle = false
 
+	@Environment(\.scenePhase) private var scenePhase
+
 	var body: some View {
 		if viewModel.isUnlocked {
 			MapReader { proxy in
@@ -54,7 +56,7 @@ struct ContentView: View {
 						Spacer()
 						HStack {
 							Spacer()
-							
+
 							Button {
 								mapHybridStyle.toggle()
 							} label: {
@@ -69,17 +71,32 @@ struct ContentView: View {
 					.padding()
 
 				}
+				.onChange(of: scenePhase) { oldPhase, newPhase in
+					if newPhase == .background {
+						viewModel.isUnlocked = false
+					}
+				}
 			}
 		} else {
-			Button("Unlock App", action: viewModel.authenticate)
-				.padding()
-				.background(.blue.gradient)
-				.foregroundStyle(.white)
-				.clipShape(.capsule)
-				.alert("Auth failed", isPresented: $viewModel.errorAlertPresented) {
-					Button("OK") { }
+			Image(systemName: "faceid")
+				.resizable()
+				.frame(width: 200, height: 200)
+				.foregroundStyle(.blue.gradient)
+				.onTapGesture {
+					viewModel.authenticate()
+				}
+				.alert(
+					"Auth failed",
+					isPresented: $viewModel.errorAlertPresented
+				) {
+					Button("OK") {}
 					Button("Retry") {
 						viewModel.authenticate()
+					}
+				}
+				.onChange(of: scenePhase) { oldPhase, newPhase in
+					if newPhase == .active {
+							viewModel.authenticate()
 					}
 				}
 		}

@@ -61,12 +61,8 @@ extension ContentView {
 					success, authError in
 					if success {
 						self.isUnlocked = true
-					} else {
-						self.errorAlertPresented.toggle()
 					}
 				}
-			} else {
-				// no biometrics
 			}
 		}
 	}

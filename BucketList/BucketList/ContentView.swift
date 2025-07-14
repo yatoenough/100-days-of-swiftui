@@ -76,6 +76,12 @@ struct ContentView: View {
 				.background(.blue.gradient)
 				.foregroundStyle(.white)
 				.clipShape(.capsule)
+				.alert("Auth failed", isPresented: $viewModel.errorAlertPresented) {
+					Button("OK") { }
+					Button("Retry") {
+						viewModel.authenticate()
+					}
+				}
 		}
 	}
 }

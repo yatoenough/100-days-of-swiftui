@@ -8,17 +8,13 @@
 import SwiftUI
 
 struct EditView: View {
-	enum LoadingState {
-		case loading, loaded, failed
-	}
-
-	@Environment(\.dismiss) private var dismiss
-
 	let location: Location
-
+	var onSave: (Location) -> Void
+	
+	@Environment(\.dismiss) private var dismiss
+	
 	@State private var name: String
 	@State private var description: String
-	var onSave: (Location) -> Void
 
 	@State private var loadingState = LoadingState.loading
 	@State private var pages = [Page]()

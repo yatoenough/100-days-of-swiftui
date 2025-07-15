@@ -85,15 +85,6 @@ struct ContentView: View {
 				.onTapGesture {
 					viewModel.authenticate()
 				}
-				.alert(
-					"Auth failed",
-					isPresented: $viewModel.errorAlertPresented
-				) {
-					Button("OK") {}
-					Button("Retry") {
-						viewModel.authenticate()
-					}
-				}
 				.onChange(of: scenePhase) { oldPhase, newPhase in
 					if newPhase == .active {
 							viewModel.authenticate()

@@ -5,57 +5,39 @@
 //  Created by Nikita Shyshkin on 20/07/2025.
 //
 
-import SwiftUI
+import PhotosUI
 import SwiftData
+import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+	@State private var selectedImage: PhotosPickerItem?
+	@State private var loadedImage: UIImage?
+	
+	
+	var body: some View {
+		NavigationStack {
+			if let loadedImage {
+				Image(uiImage: loadedImage)
+					.resizable()
+					.scaledToFit()
+			}
+			
+			PhotosPicker("Pick an image", selection: $selectedImage)
+			Text("Hello, World!")
+		}
+		.onChange(of: selectedImage, loadImage)
+	}
 
-    var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
+	func loadImage() {
+		Task {
+			guard let imageData = try await selectedImage?.loadTransferable(type: Data.self) else {
+				return
+			}
+			loadedImage = UIImage(data: imageData)
+		}
+	}
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+	ContentView()
 }

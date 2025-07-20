@@ -40,4 +40,5 @@ struct ContentView: View {
 
 #Preview {
 	ContentView()
+		.modelContainer(for: SavedImage.self, inMemory: true)
 }

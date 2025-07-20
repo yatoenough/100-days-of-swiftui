@@ -14,6 +14,8 @@ struct ContentView: View {
 	
 	@Environment(PhotosViewModel.self) private var photosViewModel
 	
+	@State private var showAddPhotoSheet = false
+	
 	var body: some View {
 		NavigationStack {
 			List(savedImages) { image in
@@ -21,12 +23,20 @@ struct ContentView: View {
 					photosViewModel.loadImage(data: image.data)
 						.resizable()
 						.frame(width: 50, height: 50)
-						.scaledToFill()
-					Spacer()
+						.clipShape(RoundedRectangle(cornerRadius: 15))
 					Text("\(image.name)")
+					Spacer()
 				}
 				.frame(maxWidth: .infinity, maxHeight: 200)
 			}
+			.toolbar {
+				Button("Add new photo") {
+					showAddPhotoSheet.toggle()
+				}
+			}
+		}
+		.sheet(isPresented: $showAddPhotoSheet) {
+			AddPhotoView()
 		}
 	}
 }

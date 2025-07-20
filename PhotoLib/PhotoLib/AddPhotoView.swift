@@ -15,6 +15,7 @@ struct AddPhotoView: View {
 	@State private var name = ""
 
 	@Environment(\.modelContext) var modelContext
+	@Environment(\.dismiss) private var dismiss
 	@Environment(PhotosViewModel.self) private var photosViewModel
 
 	private let cornerRadius: CGFloat = 15
@@ -43,12 +44,26 @@ struct AddPhotoView: View {
 				}
 				.frame(width: 200, height: 200)
 
-				TextField("Enter", text: $name)
+				TextField("Add photo name", text: $name)
 					.padding(.vertical)
 					.textFieldStyle(.roundedBorder)
 			}
 			.onChange(of: selectedImage, loadImage)
 			.padding()
+			.toolbar {
+				ToolbarItem(placement: .cancellationAction) {
+					Button("Cancel", role: .cancel) {
+						dismiss()
+					}
+				}
+				
+				ToolbarItem(placement: .confirmationAction) {
+					Button("+ Add", action: saveImage)
+						.disabled(name.isEmpty)
+				}
+				
+				
+			}
 		}
 
 	}
@@ -59,7 +74,9 @@ struct AddPhotoView: View {
 				from: selectedImage
 			)
 
-			loadedImage = PhotosViewModel().loadImage(data: imageData)
+			withAnimation {
+				loadedImage = PhotosViewModel().loadImage(data: imageData)
+			}
 		}
 	}
 
@@ -71,7 +88,7 @@ struct AddPhotoView: View {
 
 			let newImage = SavedPhoto(
 				id: UUID(),
-				name: "name",
+				name: name,
 				photo: imageData
 			)
 

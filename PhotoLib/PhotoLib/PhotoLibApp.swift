@@ -11,7 +11,7 @@ import SwiftData
 @main
 struct PhotoLibApp: App {
     var sharedModelContainer: ModelContainer = {
-		let schema = Schema([SavedImage.self])
+		let schema = Schema([SavedPhoto.self])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
@@ -26,5 +26,6 @@ struct PhotoLibApp: App {
             ContentView()
         }
         .modelContainer(sharedModelContainer)
+		.environment(PhotosViewModel())
     }
 }

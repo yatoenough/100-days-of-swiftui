@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-	@Query var savedImages: [SavedPhoto]
+	@Query(sort: \SavedPhoto.name) var savedImages: [SavedPhoto]
 	
 	@Environment(PhotosViewModel.self) private var photosViewModel
 	
@@ -34,6 +34,7 @@ struct ContentView: View {
 					showAddPhotoSheet.toggle()
 				}
 			}
+			.navigationTitle("PhotoLib")
 		}
 		.sheet(isPresented: $showAddPhotoSheet) {
 			AddPhotoView()

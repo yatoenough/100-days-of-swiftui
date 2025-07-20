@@ -59,7 +59,7 @@ struct AddPhotoView: View {
 				
 				ToolbarItem(placement: .confirmationAction) {
 					Button("+ Add", action: saveImage)
-						.disabled(name.isEmpty)
+						.disabled(name.isEmpty || selectedImage == nil)
 				}
 				
 				
@@ -93,6 +93,8 @@ struct AddPhotoView: View {
 			)
 
 			modelContext.insert(newImage)
+			
+			dismiss()
 		}
 	}
 }

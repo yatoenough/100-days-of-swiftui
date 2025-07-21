@@ -21,6 +21,10 @@ struct PhotoDetailView: View {
 					.scaledToFit()
 			}
 			.padding()
+			
+			if let location = photo.location {
+				Text("Location: \(location.latitude), \(location.longitude)")
+			}
 		}
     }
 }

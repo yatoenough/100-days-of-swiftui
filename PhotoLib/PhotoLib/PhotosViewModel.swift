@@ -41,4 +41,22 @@ class PhotosViewModel {
 		modelContext.delete(image)
 	}
 
+	func getPhotoLocation(for photo: PhotosPickerItem) -> Location? {
+		if let localID = photo.itemIdentifier {
+			let result = PHAsset.fetchAssets(
+				withLocalIdentifiers: [localID],
+				options: nil
+			)
+			
+			if let asset = result.firstObject {
+				guard let latitude: Double = asset.location?.coordinate.latitude else { return nil }
+				guard let longitude: Double = asset.location?.coordinate.longitude else { return nil }
+				
+				return Location(latitude: latitude, longitude: longitude)
+			}
+
+		}
+
+		return nil
+	}
 }

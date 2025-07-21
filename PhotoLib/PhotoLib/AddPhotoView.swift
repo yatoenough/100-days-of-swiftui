@@ -24,7 +24,7 @@ struct AddPhotoView: View {
 		NavigationStack {
 			VStack {
 				VStack {
-					PhotosPicker(selection: $selectedImage) {
+					PhotosPicker(selection: $selectedImage, matching: .images, photoLibrary: .shared()) {
 						if let loadedImage {
 							loadedImage
 								.resizable()
@@ -44,6 +44,9 @@ struct AddPhotoView: View {
 						}
 					}
 					.frame(width: 200, height: 200)
+					.onAppear {
+						PHPhotoLibrary.requestAuthorization { _ in }
+					}
 				}
 				.frame(maxWidth: .infinity, maxHeight: .infinity)
 
@@ -88,14 +91,19 @@ struct AddPhotoView: View {
 
 	func saveImage() {
 		Task {
+			guard let selectedImage else { return }
+			
 			let imageData = try await photosViewModel.imageData(
 				from: selectedImage
 			)
+			
+			let location = photosViewModel.getPhotoLocation(for: selectedImage)
 
 			let newImage = SavedPhoto(
 				id: UUID(),
 				name: name,
-				photo: imageData
+				photo: imageData,
+				location: location
 			)
 
 			modelContext.insert(newImage)

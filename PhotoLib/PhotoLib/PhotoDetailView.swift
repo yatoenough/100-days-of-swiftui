@@ -10,6 +10,7 @@ import SwiftUI
 
 struct PhotoDetailView: View {
 	let photo: SavedPhoto
+	let path: NavigationPath
 
 	var body: some View {
 		ScrollView {
@@ -20,36 +21,43 @@ struct PhotoDetailView: View {
 				Image(uiImage: UIImage(data: photo.data) ?? UIImage())
 					.resizable()
 					.scaledToFit()
+					.clipShape(RoundedRectangle(cornerRadius: 15))
 			}
 			.padding()
 
 			if let location = photo.location {
-				Map(
-					initialPosition: MapCameraPosition.region(
-						MKCoordinateRegion(
-							center: CLLocationCoordinate2D(
+				NavigationLink(value: location) {
+					Map(
+						initialPosition: MapCameraPosition.region(
+							MKCoordinateRegion(
+								center: CLLocationCoordinate2D(
+									latitude: location.latitude,
+									longitude: location.longitude
+								),
+								span: MKCoordinateSpan(
+									latitudeDelta: 0.1,
+									longitudeDelta: 0.1
+								)
+							)
+						),
+						interactionModes: []
+					) {
+						Marker(
+							photo.name,
+							coordinate: CLLocationCoordinate2D(
 								latitude: location.latitude,
 								longitude: location.longitude
-							),
-							span: MKCoordinateSpan(
-								latitudeDelta: 0.1,
-								longitudeDelta: 0.1
 							)
 						)
-					),
-					interactionModes: []
-				) {
-					Marker(
-						photo.name,
-						coordinate: CLLocationCoordinate2D(
-							latitude: location.latitude,
-							longitude: location.longitude
-						)
-					)
+					}
+					.padding()
+					.frame(height: 200)
 				}
-				.frame(height: 200)
-				.padding()
+
 			}
+		}
+		.navigationDestination(for: Location.self) { location in
+			PhotoLocationMapView(name: photo.name, location: location)
 		}
 	}
 }
@@ -61,6 +69,7 @@ struct PhotoDetailView: View {
 			name: "Demo",
 			photo: Data(),
 			location: Location(latitude: 30, longitude: 30)
-		)
+		),
+		path: NavigationPath()
 	)
 }

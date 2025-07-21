@@ -42,7 +42,7 @@ struct ContentView: View {
 				}
 			}
 			.navigationDestination(for: SavedPhoto.self) { photo in
-				PhotoDetailView(photo: photo)
+				PhotoDetailView(photo: photo, path: path)
 			}
 			.toolbar {
 				Button("Add new photo") {

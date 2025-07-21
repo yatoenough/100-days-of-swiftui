@@ -5,7 +5,7 @@
 //  Created by Nikita Shyshkin on 22/07/2025.
 //
 
-struct Location: Codable {
+struct Location: Codable, Hashable {
     let latitude: Double
     let longitude: Double
 

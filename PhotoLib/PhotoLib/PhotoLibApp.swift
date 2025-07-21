@@ -26,6 +26,6 @@ struct PhotoLibApp: App {
             ContentView()
         }
         .modelContainer(sharedModelContainer)
-		.environment(PhotosViewModel())
+		.environment(PhotosViewModel(modelContext: sharedModelContainer.mainContext))
     }
 }

@@ -23,30 +23,37 @@ struct AddPhotoView: View {
 	var body: some View {
 		NavigationStack {
 			VStack {
-				PhotosPicker(selection: $selectedImage) {
-					if let loadedImage {
-						loadedImage
-							.resizable()
-							.clipShape(
-								RoundedRectangle(cornerRadius: cornerRadius)
-							)
-					} else {
-						RoundedRectangle(cornerRadius: cornerRadius)
-							.strokeBorder(
-								style: StrokeStyle(lineWidth: 4, dash: [10])
-							)
-							.overlay {
-								Image(systemName: "plus")
-									.bold()
-									.scaleEffect(2)
-							}
+				VStack {
+					PhotosPicker(selection: $selectedImage) {
+						if let loadedImage {
+							loadedImage
+								.resizable()
+								.clipShape(
+									RoundedRectangle(cornerRadius: cornerRadius)
+								)
+						} else {
+							RoundedRectangle(cornerRadius: cornerRadius)
+								.strokeBorder(
+									style: StrokeStyle(lineWidth: 4, dash: [10])
+								)
+								.overlay {
+									Image(systemName: "plus")
+										.bold()
+										.scaleEffect(2)
+								}
+						}
 					}
+					.frame(width: 200, height: 200)
 				}
-				.frame(width: 200, height: 200)
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
 
-				TextField("Add photo name", text: $name)
-					.padding(.vertical)
-					.textFieldStyle(.roundedBorder)
+				VStack {
+					TextField("Add photo name", text: $name)
+						.padding(.vertical)
+						.textFieldStyle(.roundedBorder)
+					Spacer()
+				}
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
 			}
 			.onChange(of: selectedImage, loadImage)
 			.padding()
@@ -56,13 +63,12 @@ struct AddPhotoView: View {
 						dismiss()
 					}
 				}
-				
+
 				ToolbarItem(placement: .confirmationAction) {
 					Button("+ Add", action: saveImage)
 						.disabled(name.isEmpty || selectedImage == nil)
 				}
-				
-				
+
 			}
 		}
 
@@ -75,7 +81,7 @@ struct AddPhotoView: View {
 			)
 
 			withAnimation {
-				loadedImage = PhotosViewModel().loadImage(data: imageData)
+				loadedImage = photosViewModel.loadImage(data: imageData)
 			}
 		}
 	}
@@ -93,14 +99,14 @@ struct AddPhotoView: View {
 			)
 
 			modelContext.insert(newImage)
-			
+
 			dismiss()
 		}
 	}
 }
-
-#Preview {
-	AddPhotoView()
-		.modelContainer(for: SavedPhoto.self, inMemory: true)
-		.environment(PhotosViewModel())
-}
+//
+//#Preview {
+//	AddPhotoView()
+//		.modelContainer(for: SavedPhoto.self, inMemory: true)
+//		.environment(PhotosViewModel())
+//}

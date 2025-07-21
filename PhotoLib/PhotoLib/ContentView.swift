@@ -11,11 +11,11 @@ import SwiftUI
 
 struct ContentView: View {
 	@Query(sort: \SavedPhoto.name) var savedImages: [SavedPhoto]
-	
+
 	@Environment(PhotosViewModel.self) private var photosViewModel
-	
+
 	@State private var showAddPhotoSheet = false
-	
+
 	var body: some View {
 		NavigationStack {
 			List(savedImages) { image in
@@ -28,6 +28,14 @@ struct ContentView: View {
 					Spacer()
 				}
 				.frame(maxWidth: .infinity, maxHeight: 200)
+				.swipeActions {
+					Button(role: .destructive) {
+						photosViewModel.removeImage(image)
+					} label: {
+						Label("Delete", systemImage: "trash")
+
+					}
+				}
 			}
 			.toolbar {
 				Button("Add new photo") {
@@ -35,15 +43,15 @@ struct ContentView: View {
 				}
 			}
 			.navigationTitle("PhotoLib")
-		}
-		.sheet(isPresented: $showAddPhotoSheet) {
-			AddPhotoView()
+			.sheet(isPresented: $showAddPhotoSheet) {
+				AddPhotoView()
+			}
 		}
 	}
 }
 
-#Preview {
-	ContentView()
-		.modelContainer(for: SavedPhoto.self, inMemory: true)
-		.environment(PhotosViewModel())
-}
+//#Preview {
+//	ContentView()
+//		.modelContainer(for: SavedPhoto.self, inMemory: true)
+//		.environment(PhotosViewModel())
+//}

@@ -5,20 +5,26 @@
 //  Created by Nikita Shyshkin on 21/07/2025.
 //
 
-import Foundation
-import SwiftUI
 import PhotosUI
+import SwiftData
+import SwiftUI
 
 @Observable
 class PhotosViewModel {
+	private var modelContext: ModelContext
+
+	init(modelContext: ModelContext) {
+		self.modelContext = modelContext
+	}
+
 	func loadImage(data: Data) -> Image {
 		guard let uiImage = UIImage(data: data) else {
 			fatalError("Couldn't load image")
 		}
-		
+
 		return Image(uiImage: uiImage)
 	}
-	
+
 	func imageData(from image: PhotosPickerItem?) async throws -> Data {
 		guard
 			let imageData = try await image?.loadTransferable(
@@ -27,8 +33,12 @@ class PhotosViewModel {
 		else {
 			fatalError("Couldn't load image data")
 		}
-		
+
 		return imageData
 	}
-	
+
+	func removeImage(_ image: SavedPhoto) {
+		modelContext.delete(image)
+	}
+
 }

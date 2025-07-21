@@ -25,7 +25,7 @@ class PhotosViewModel {
 		return Image(uiImage: uiImage)
 	}
 
-	func imageData(from image: PhotosPickerItem?) async throws -> Data {
+	func photoData(from image: PhotosPickerItem?) async throws -> Data {
 		guard
 			let imageData = try await image?.loadTransferable(
 				type: Data.self
@@ -37,7 +37,7 @@ class PhotosViewModel {
 		return imageData
 	}
 
-	func removeImage(_ image: SavedPhoto) {
+	func removePhoto(_ image: SavedPhoto) {
 		modelContext.delete(image)
 	}
 

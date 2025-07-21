@@ -27,37 +27,18 @@ struct PhotoDetailView: View {
 
 			if let location = photo.location {
 				NavigationLink(value: location) {
-					Map(
-						initialPosition: MapCameraPosition.region(
-							MKCoordinateRegion(
-								center: CLLocationCoordinate2D(
-									latitude: location.latitude,
-									longitude: location.longitude
-								),
-								span: MKCoordinateSpan(
-									latitudeDelta: 0.1,
-									longitudeDelta: 0.1
-								)
-							)
-						),
-						interactionModes: []
-					) {
-						Marker(
-							photo.name,
-							coordinate: CLLocationCoordinate2D(
-								latitude: location.latitude,
-								longitude: location.longitude
-							)
-						)
-					}
-					.padding()
-					.frame(height: 200)
+					PhotoLocationMapView(name: photo.name, location: location)
+						.padding()
+						.frame(height: 200)
 				}
-
 			}
 		}
 		.navigationDestination(for: Location.self) { location in
-			PhotoLocationMapView(name: photo.name, location: location)
+			PhotoLocationMapView(
+				name: photo.name,
+				location: location,
+				interactive: true
+			)
 		}
 	}
 }

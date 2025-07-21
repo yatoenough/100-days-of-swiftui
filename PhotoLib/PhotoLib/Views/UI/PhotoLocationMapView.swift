@@ -11,6 +11,13 @@ import SwiftUI
 struct PhotoLocationMapView: View {
 	let name: String
 	let location: Location
+	let interactive: Bool
+	
+	init(name: String, location: Location, interactive: Bool = false) {
+		self.name = name
+		self.location = location
+		self.interactive = interactive
+	}
 
 	var body: some View {
 		Map(
@@ -25,7 +32,8 @@ struct PhotoLocationMapView: View {
 						longitudeDelta: 0.1
 					)
 				)
-			)
+			),
+			interactionModes: interactive ? .all : []
 		) {
 			Marker(
 				name,
@@ -41,6 +49,7 @@ struct PhotoLocationMapView: View {
 #Preview {
 	PhotoLocationMapView(
 		name: "Demo",
-		location: Location(latitude: 30, longitude: 30)
+		location: Location(latitude: 30, longitude: 30),
+		interactive: true
 	)
 }

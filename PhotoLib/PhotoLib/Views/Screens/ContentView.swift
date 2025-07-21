@@ -34,7 +34,7 @@ struct ContentView: View {
 				.frame(maxWidth: .infinity, maxHeight: 200)
 				.swipeActions {
 					Button(role: .destructive) {
-						photosViewModel.removeImage(image)
+						photosViewModel.removePhoto(image)
 					} label: {
 						Label("Delete", systemImage: "trash")
 

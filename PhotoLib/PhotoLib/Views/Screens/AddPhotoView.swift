@@ -9,7 +9,7 @@ import PhotosUI
 import SwiftUI
 
 struct AddPhotoView: View {
-	@State private var selectedImage: PhotosPickerItem?
+	@State private var selectedPhoto: PhotosPickerItem?
 	@State private var loadedImage: Image?
 
 	@State private var name = ""
@@ -24,7 +24,7 @@ struct AddPhotoView: View {
 		NavigationStack {
 			VStack {
 				VStack {
-					PhotosPicker(selection: $selectedImage, matching: .images, photoLibrary: .shared()) {
+					PhotosPicker(selection: $selectedPhoto, matching: .images, photoLibrary: .shared()) {
 						if let loadedImage {
 							loadedImage
 								.resizable()
@@ -58,7 +58,7 @@ struct AddPhotoView: View {
 				}
 				.frame(maxWidth: .infinity, maxHeight: .infinity)
 			}
-			.onChange(of: selectedImage, loadImage)
+			.onChange(of: selectedPhoto, loadImage)
 			.padding()
 			.toolbar {
 				ToolbarItem(placement: .cancellationAction) {
@@ -69,7 +69,7 @@ struct AddPhotoView: View {
 
 				ToolbarItem(placement: .confirmationAction) {
 					Button("+ Add", action: saveImage)
-						.disabled(name.isEmpty || selectedImage == nil)
+						.disabled(name.isEmpty || selectedPhoto == nil)
 				}
 
 			}
@@ -79,8 +79,8 @@ struct AddPhotoView: View {
 
 	func loadImage() {
 		Task {
-			let imageData = try await photosViewModel.imageData(
-				from: selectedImage
+			let imageData = try await photosViewModel.photoData(
+				from: selectedPhoto
 			)
 
 			withAnimation {
@@ -91,13 +91,13 @@ struct AddPhotoView: View {
 
 	func saveImage() {
 		Task {
-			guard let selectedImage else { return }
+			guard let selectedPhoto else { return }
 			
-			let imageData = try await photosViewModel.imageData(
-				from: selectedImage
+			let imageData = try await photosViewModel.photoData(
+				from: selectedPhoto
 			)
 			
-			let location = photosViewModel.getPhotoLocation(for: selectedImage)
+			let location = photosViewModel.getPhotoLocation(for: selectedPhoto)
 
 			let newImage = SavedPhoto(
 				id: UUID(),

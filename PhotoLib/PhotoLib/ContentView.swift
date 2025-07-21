@@ -16,16 +16,20 @@ struct ContentView: View {
 
 	@State private var showAddPhotoSheet = false
 
+	@State private var path = NavigationPath()
+
 	var body: some View {
 		NavigationStack {
 			List(savedImages) { image in
-				HStack {
-					photosViewModel.loadImage(data: image.data)
-						.resizable()
-						.frame(width: 50, height: 50)
-						.clipShape(RoundedRectangle(cornerRadius: 15))
-					Text("\(image.name)")
-					Spacer()
+				NavigationLink(value: image) {
+					HStack {
+						photosViewModel.loadImage(data: image.data)
+							.resizable()
+							.frame(width: 50, height: 50)
+							.clipShape(RoundedRectangle(cornerRadius: 15))
+						Text("\(image.name)")
+						Spacer()
+					}
 				}
 				.frame(maxWidth: .infinity, maxHeight: 200)
 				.swipeActions {
@@ -37,6 +41,9 @@ struct ContentView: View {
 					}
 				}
 			}
+			.navigationDestination(for: SavedPhoto.self) { photo in
+				photosViewModel.loadImage(data: photo.data)
+			}
 			.toolbar {
 				Button("Add new photo") {
 					showAddPhotoSheet.toggle()
@@ -46,6 +53,7 @@ struct ContentView: View {
 			.sheet(isPresented: $showAddPhotoSheet) {
 				AddPhotoView()
 			}
+
 		}
 	}
 }

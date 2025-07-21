@@ -13,7 +13,7 @@ struct PhotoDetailView: View {
     var body: some View {
 		ScrollView {
 			VStack(alignment: .leading) {
-				Text("Something in Wroclaw, Poland")
+				Text(photo.name)
 					.font(.largeTitle)
 					.bold()
 				Image(uiImage: UIImage(data: photo.data) ?? UIImage())

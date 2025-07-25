@@ -6,12 +6,21 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Card: Codable {
+@Model
+class Card: Identifiable {
+	var id: UUID
 	var prompt: String
 	var answer: String
 	
+	init(id: UUID, prompt: String, answer: String) {
+		self.id = id
+		self.prompt = prompt
+		self.answer = answer
+	}
+	
 	#if DEBUG
-	static let example = Card(prompt: "What is Swift?", answer: "A high-level programming language.")
+	static let example = Card(id: UUID(), prompt: "What is Swift?", answer: "A high-level programming language.")
 	#endif
 }

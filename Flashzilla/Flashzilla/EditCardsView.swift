@@ -5,16 +5,19 @@
 //  Created by Nikita Shyshkin on 25/07/2025.
 //
 
+import SwiftData
 import SwiftUI
 
 struct EditCardsView: View {
 	@Environment(\.dismiss) var dismiss
-	
-	@State private var cards = [Card]()
+	@Environment(\.modelContext) var modelContext
+
 	@State private var newPrompt = ""
 	@State private var newAnswer = ""
-	
-    var body: some View {
+
+	@Query(sort: \Card.id) private var cards: [Card]
+
+	var body: some View {
 		NavigationStack {
 			List {
 				Section("Add new card") {
@@ -22,16 +25,15 @@ struct EditCardsView: View {
 					TextField("Answer", text: $newAnswer)
 					Button("Add Card", action: addCard)
 				}
-				
+
 				Section {
-					ForEach(0..<cards.count, id: \.self) { index in
+					ForEach(cards) { card in
 						VStack(alignment: .leading) {
-							Text(cards[index].prompt)
+							Text(card.prompt)
 								.font(.headline)
-							
-							Text(cards[index].answer)
+
+							Text(card.answer)
 								.font(.headline)
-							
 						}
 					}
 					.onDelete(perform: removeCards)
@@ -41,45 +43,31 @@ struct EditCardsView: View {
 			.toolbar {
 				Button("Done", action: done)
 			}
-			.onAppear(perform: loadData)
 		}
-    }
-	
+	}
+
 	func addCard() {
 		let trimmedPrompt = newPrompt.trimmingCharacters(in: .whitespaces)
 		let trimmedAnswer = newAnswer.trimmingCharacters(in: .whitespaces)
-		
+
 		guard !trimmedPrompt.isEmpty && !trimmedAnswer.isEmpty else { return }
-		
-		let card = Card(prompt: newPrompt, answer: newAnswer)
-		cards.insert(card, at: 0)
-		saveData()
-		
+
+		let card = Card(id: UUID(), prompt: newPrompt, answer: newAnswer)
+		modelContext.insert(card)
+
 		newPrompt = ""
 		newAnswer = ""
 	}
-	
-	func removeCards(ad offsets: IndexSet) {
-		cards.remove(atOffsets: offsets)
-		saveData()
+
+	func removeCards(at offsets: IndexSet) {
+		for offset in offsets {
+			let card = cards[offset]
+			modelContext.delete(card)
+		}
 	}
-	
+
 	func done() {
 		dismiss()
-	}
-	
-	func loadData() {
-		if let data = UserDefaults.standard.data(forKey: "Cards") {
-			if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-				cards = decoded
-			}
-		}
-	}
-	
-	func saveData() {
-		if let data = try? JSONEncoder().encode(cards) {
-			UserDefaults.standard.set(data, forKey: "Cards")
-		}
 	}
 }
 

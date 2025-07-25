@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 extension View {
 	func stacked(at position: Int, in total: Int) -> some View {
@@ -13,6 +14,8 @@ extension View {
 		return self.offset(y: offset * 10)
 	}
 }
+
+#warning("Fix bug with rendering problem when animated")
 
 struct ContentView: View {
 	@Environment(\.accessibilityDifferentiateWithoutColor)
@@ -22,6 +25,8 @@ struct ContentView: View {
 	var accessibilityVoiceOverEnabled
 	
 	@Environment(\.scenePhase) var scenePhase
+	
+	@Query private var storedCards: [Card]
 
 	@State private var cards = [Card]()
 	@State private var timeRemaining = 100
@@ -48,9 +53,7 @@ struct ContentView: View {
 				ZStack {
 					ForEach(0..<cards.count, id: \.self) { index in
 						CardView(card: cards[index]) {
-							withAnimation {
-								removeCard(at: index)
-							}
+							removeCard(at: index)
 						}
 						.stacked(at: index, in: cards.count)
 						.allowsHitTesting(index == cards.count - 1)
@@ -165,11 +168,7 @@ struct ContentView: View {
 	}
 	
 	func loadData() {
-		if let data = UserDefaults.standard.data(forKey: "Cards") {
-			if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-				cards = decoded
-			}
-		}
+		cards = storedCards
 	}
 }
 

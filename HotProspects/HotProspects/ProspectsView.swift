@@ -8,6 +8,7 @@
 import CodeScanner
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 struct ProspectsView: View {
 	enum FilterType {
@@ -52,29 +53,57 @@ struct ProspectsView: View {
 	var body: some View {
 		NavigationStack {
 			List(prospects, selection: $selectedProspects) { prospect in
-				VStack(alignment: .leading) {
-					Text(prospect.name)
-						.font(.headline)
+				HStack {
+					VStack(alignment: .leading) {
+						Text(prospect.name)
+							.font(.headline)
 
-					Text(prospect.email)
-						.foregroundStyle(.secondary)
+						Text(prospect.email)
+							.foregroundStyle(.secondary)
+					}
+
+					Spacer()
+
+					Image(
+						systemName: prospect.isContacted
+							? "person.crop.circle.fill.badge.checkmark"
+							: "person.crop.circle.badge.xmark"
+					)
+					.foregroundStyle(prospect.isContacted ? .green : .red)
 				}
 				.swipeActions {
-					Button("Delete", systemImage: "trash", role: .destructive, action: delete)
-					
+					Button(
+						"Delete",
+						systemImage: "trash",
+						role: .destructive,
+						action: delete
+					)
+
 					if prospect.isContacted {
-						Button("Uncontact", systemImage: "person.crop.circle.badge.xmark") {
+						Button(
+							"Uncontact",
+							systemImage: "person.crop.circle.badge.xmark"
+						) {
 							prospect.isContacted.toggle()
 						}
 						.tint(.blue)
 					} else {
-						Button("Contact", systemImage: "person.crop.circle.fill.badge.checkmark") {
+						Button(
+							"Contact",
+							systemImage:
+								"person.crop.circle.fill.badge.checkmark"
+						) {
 							prospect.isContacted.toggle()
 						}
 						.tint(.green)
+
+						Button("Remind me", systemImage: "bell") {
+							addNotification(for: prospect)
+						}
 					}
 				}
 				.tag(prospect)
+
 			}
 			.navigationTitle(title)
 			.toolbar {
@@ -83,11 +112,11 @@ struct ProspectsView: View {
 						isShowingScanner = true
 					}
 				}
-				
+
 				ToolbarItem(placement: .topBarLeading) {
 					EditButton()
 				}
-				
+
 				if selectedProspects.isEmpty == false {
 					ToolbarItem(placement: .bottomBar) {
 						Button("Delete Selected", action: delete)
@@ -111,18 +140,66 @@ struct ProspectsView: View {
 		case .success(let result):
 			let details = result.string.components(separatedBy: "\n")
 			guard details.count == 2 else { return }
-			
-			let person = Prospect(name: details[0], email: details[1], isContacted: false)
+
+			let person = Prospect(
+				name: details[0],
+				email: details[1],
+				isContacted: false
+			)
 			modelContext.insert(person)
-			
+
 		case .failure(let error):
 			print("Scanning failed: \(error.localizedDescription)")
 		}
 	}
-	
+
 	func delete() {
 		for prospect in selectedProspects {
 			modelContext.delete(prospect)
+		}
+	}
+
+	func addNotification(for prospect: Prospect) {
+		let center = UNUserNotificationCenter.current()
+
+		let addRequest = {
+			let content = UNMutableNotificationContent()
+			content.title = "Contact \(prospect.name)"
+			content.subtitle = prospect.email
+			content.sound = .default
+
+			//			var dateComponents = DateComponents()
+			//			dateComponents.hour = 9
+			//
+			//			let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+
+			let trigger = UNTimeIntervalNotificationTrigger(
+				timeInterval: 5,
+				repeats: false
+			)
+
+			let request = UNNotificationRequest(
+				identifier: UUID().uuidString,
+				content: content,
+				trigger: trigger
+			)
+			center.add(request)
+		}
+
+		center.getNotificationSettings { settings in
+			if settings.authorizationStatus == .authorized {
+				addRequest()
+			} else {
+				center.requestAuthorization(options: [.alert, .badge, .sound]) {
+					success,
+					error in
+					if success {
+						addRequest()
+					} else if let error {
+						print(error.localizedDescription)
+					}
+				}
+			}
 		}
 	}
 }

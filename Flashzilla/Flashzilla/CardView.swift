@@ -11,25 +11,34 @@ struct CardView: View {
 	let card: Card
 	
 	var removal: (() -> Void)? = nil
-	
+
+	@Environment(\.accessibilityDifferentiateWithoutColor)
+	var accessibilityDifferentiateWithoutColor
+
 	@State private var isShowingAnswer = false
 	@State private var offset = CGSize.zero
-	
-    var body: some View {
+
+	var body: some View {
 		ZStack {
 			RoundedRectangle(cornerRadius: 25)
-				.fill(.white.opacity(1 - Double(abs(offset.width / 50))))
+				.fill(
+					accessibilityDifferentiateWithoutColor
+						? .white
+						: .white.opacity(1 - Double(abs(offset.width / 50)))
+				)
 				.background(
-					RoundedRectangle(cornerRadius: 25)
-						.fill(offset.width > 0 ? .green : .red)
+					accessibilityDifferentiateWithoutColor
+						? nil
+						: RoundedRectangle(cornerRadius: 25)
+							.fill(offset.width > 0 ? .green : .red)
 				)
 				.shadow(radius: 10)
-			
+
 			VStack {
 				Text(card.prompt)
 					.font(.largeTitle)
 					.foregroundStyle(.black)
-				
+
 				if isShowingAnswer {
 					Text(card.answer)
 						.font(.title)
@@ -63,7 +72,7 @@ struct CardView: View {
 				isShowingAnswer.toggle()
 			}
 		}
-    }
+	}
 }
 
 #Preview {

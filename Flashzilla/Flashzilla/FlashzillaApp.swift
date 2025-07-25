@@ -6,13 +6,24 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct FlashzillaApp: App {
+	private let modelContainer = {
+		do {
+			let container = try ModelContainer(for: Card.self)
+			return container
+		} catch {
+			fatalError(error.localizedDescription)
+		}
+	}()
+	
     var body: some Scene {
         WindowGroup {
             ContentView()
-				.modelContainer(for: Card.self)
+				.modelContainer(modelContainer)
+				.environment(CardsViewModel(modelContext: modelContainer.mainContext))
         }
     }
 }

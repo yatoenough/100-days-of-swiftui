@@ -25,6 +25,7 @@ struct ContentView: View {
 	var accessibilityVoiceOverEnabled
 	
 	@Environment(\.scenePhase) var scenePhase
+	@Environment(CardsViewModel.self) var cardsViewModel
 	
 	@Query private var storedCards: [Card]
 
@@ -168,7 +169,7 @@ struct ContentView: View {
 	}
 	
 	func loadData() {
-		cards = storedCards
+		cards = cardsViewModel.cards
 	}
 }
 

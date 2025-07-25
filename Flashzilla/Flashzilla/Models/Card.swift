@@ -13,6 +13,7 @@ class Card: Identifiable {
 	var id: UUID
 	var prompt: String
 	var answer: String
+	var createdAt = Date()
 	
 	init(id: UUID, prompt: String, answer: String) {
 		self.id = id

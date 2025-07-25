@@ -11,6 +11,7 @@ import SwiftUI
 struct EditCardsView: View {
 	@Environment(\.dismiss) var dismiss
 	@Environment(\.modelContext) var modelContext
+	@Environment(CardsViewModel.self) var cardsViewModel
 
 	@State private var newPrompt = ""
 	@State private var newAnswer = ""
@@ -36,7 +37,7 @@ struct EditCardsView: View {
 								.font(.headline)
 						}
 					}
-					.onDelete(perform: removeCards)
+					.onDelete(perform: cardsViewModel.removeCards)
 				}
 			}
 			.navigationTitle("Edit Cards")
@@ -53,17 +54,10 @@ struct EditCardsView: View {
 		guard !trimmedPrompt.isEmpty && !trimmedAnswer.isEmpty else { return }
 
 		let card = Card(id: UUID(), prompt: newPrompt, answer: newAnswer)
-		modelContext.insert(card)
+		cardsViewModel.saveCard(card)
 
 		newPrompt = ""
 		newAnswer = ""
-	}
-
-	func removeCards(at offsets: IndexSet) {
-		for offset in offsets {
-			let card = cards[offset]
-			modelContext.delete(card)
-		}
 	}
 
 	func done() {
